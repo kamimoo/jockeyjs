@@ -54,7 +54,6 @@ import com.jockeyjs.Jockey;
 import com.jockeyjs.JockeyAsyncHandler;
 import com.jockeyjs.JockeyCallback;
 import com.jockeyjs.JockeyHandler;
-import com.jockeyjs.JockeyImpl;
 
 public class MainActivity extends Activity {
 
@@ -115,7 +114,7 @@ public class MainActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 
-		jockey = JockeyImpl.getDefault();
+		jockey = new Jockey.Builder().build();
 
 		jockey.configure(webView);
 		

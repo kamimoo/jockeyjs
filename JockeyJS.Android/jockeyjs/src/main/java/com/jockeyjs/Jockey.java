@@ -139,4 +139,10 @@ public interface Jockey {
 
 	public void setWebViewClient(WebViewClient client);
 	
+	final class Builder {
+
+		public Jockey build() {
+			return JockeyImpl.getDefault();
+		}
+	}
 }
