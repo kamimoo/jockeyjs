@@ -24,6 +24,7 @@ package com.jockeyjs;
 
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import com.jockeyjs.converter.JsonConverter;
 
 /**
  * The primary interface for communicating between a WebView and the local android activity.
@@ -141,8 +142,17 @@ public interface Jockey {
 	
 	final class Builder {
 
+		private JsonConverter _converter;
 		public Jockey build() {
-			return JockeyImpl.getDefault();
+			JockeyImpl jockey = new DefaultJockeyImpl();
+			jockey.setConverter(_converter);
+			return jockey;
 		}
+
+		public Builder converter(JsonConverter converter) {
+			_converter = converter;
+			return this;
+		}
+
 	}
 }

@@ -24,6 +24,7 @@ package com.example.jockeytestapp;
 
 import static com.jockeyjs.NativeOS.nativeOS;
 
+import com.jockeyjs.converter.gson.GsonConverter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -114,7 +115,9 @@ public class MainActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 
-		jockey = new Jockey.Builder().build();
+		jockey = new Jockey.Builder()
+			.converter(new GsonConverter())
+			.build();
 
 		jockey.configure(webView);
 		

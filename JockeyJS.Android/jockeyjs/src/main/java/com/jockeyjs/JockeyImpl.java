@@ -22,6 +22,7 @@
  ******************************************************************************/
 package com.jockeyjs;
 
+import com.jockeyjs.converter.JsonConverter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,6 +52,8 @@ public abstract class JockeyImpl implements Jockey {
 	private Handler _handler = new Handler();
 
 	private JockeyWebViewClient _client;
+
+	protected JsonConverter<JockeyWebViewPayload> _converter;
 
 	public JockeyImpl() {
 		_client = new JockeyWebViewClient(this);
@@ -160,6 +163,11 @@ public abstract class JockeyImpl implements Jockey {
 	@Override
 	public void setWebViewClient(WebViewClient client) {
 		this._client.setDelegate(client);
+	}
+
+	void setConverter(JsonConverter<JockeyWebViewPayload> converter) {
+		_converter = converter;
+		_client.setConverter(converter);
 	}
 
 }

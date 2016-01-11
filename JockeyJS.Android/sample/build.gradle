@@ -22,5 +22,6 @@ android {
 
 dependencies {
   compile project(':jockeyjs')
+  compile project(':converter:converter-gson')
   compile 'com.android.support:support-v4:23.1.1'
 }
