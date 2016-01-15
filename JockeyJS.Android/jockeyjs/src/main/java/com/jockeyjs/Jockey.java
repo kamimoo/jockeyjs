@@ -40,7 +40,7 @@ public interface Jockey {
 	 * @author Paul
 	 *
 	 */
-	public interface OnValidateListener {
+	interface OnValidateListener {
 		boolean validate(String host);
 	}
 
@@ -51,14 +51,14 @@ public interface Jockey {
 	 * @param type
 	 * @param handler
 	 */
-	public void on(String type, JockeyHandler ... handler);
+	void on(String type, JockeyHandler ... handler);
 	
 	/**
 	 * Removes all handlers of the specified name
 	 * 
 	 * @param type
 	 */
-	public void off(String type);
+	void off(String type);
 	
 	
 	/**
@@ -69,7 +69,7 @@ public interface Jockey {
 	 * @param type
 	 * @param toWebView
 	 */
-	public void send(String type, WebView toWebView);
+	void send(String type, WebView toWebView);
 	
 	
 	/**
@@ -81,7 +81,7 @@ public interface Jockey {
 	 * @param toWebView
 	 * @param withPayload
 	 */
-	public void send(String type, WebView toWebView, Object withPayload);
+	void send(String type, WebView toWebView, Object withPayload);
 	
 	
 	/**
@@ -93,7 +93,7 @@ public interface Jockey {
 	 * @param toWebView
 	 * @param complete
 	 */
-	public void send(String type, WebView toWebView, JockeyCallback complete);
+	void send(String type, WebView toWebView, JockeyCallback complete);
 	
 	
 	/**
@@ -104,7 +104,7 @@ public interface Jockey {
 	 * @param withPayload
 	 * @param complete
 	 */
-	public void send(String type, WebView toWebView, Object withPayload, JockeyCallback complete);
+	void send(String type, WebView toWebView, Object withPayload, JockeyCallback complete);
 	
 	/**
 	 * Triggers the callback on the webview with the appropriate messageId
@@ -112,14 +112,14 @@ public interface Jockey {
 	 * @param webView
 	 * @param messageId
 	 */
-	public void triggerCallbackOnWebView(WebView webView, int messageId);
+	void triggerCallbackOnWebView(WebView webView, int messageId);
 	
 	/**
 	 * Configures the WebView to be able to receive and send events with Jockey
 	 * 
 	 * @param webView
 	 */
-	public void configure(WebView webView);
+	void configure(WebView webView);
 
 	/**
 	 * Returns if the Jockey implementation handles the event
@@ -127,7 +127,7 @@ public interface Jockey {
 	 * @param string
 	 * @return
 	 */
-	public boolean handles(String string);
+	boolean handles(String string);
 	
 	
 	/**
@@ -136,9 +136,9 @@ public interface Jockey {
 	 * 
 	 * @param listener
 	 */
-	public void setOnValidateListener(OnValidateListener listener);
+	void setOnValidateListener(OnValidateListener listener);
 
-	public void setWebViewClient(WebViewClient client);
+	void setWebViewClient(WebViewClient client);
 	
 	final class Builder {
 
