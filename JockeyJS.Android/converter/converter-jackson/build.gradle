@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 
+ext.jacksonVersion = '2.6.4'
+
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   buildToolsVersion rootProject.ext.buildToolsVersion
@@ -18,7 +20,7 @@ android {
 }
 
 dependencies {
-  compile 'com.fasterxml.jackson.core:jackson-databind:2.6.4'
-  compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.4'
+  compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+  compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
   compile project(':jockeyjs')
 }
