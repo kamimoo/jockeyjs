@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 
+ext.gsonVersion = '2.2.4'
+
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   buildToolsVersion rootProject.ext.buildToolsVersion
@@ -18,7 +20,7 @@ android {
 }
 
 dependencies {
-  compile 'com.google.code.gson:gson:2.2.4'
+  compile "com.google.code.gson:gson:$gsonVersion"
   compile project(':jockeyjs')
 }
 
