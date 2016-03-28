@@ -144,6 +144,9 @@ public interface Jockey {
 
 		private JsonConverter _converter;
 		public Jockey build() {
+			if (_converter == null) {
+				throw new IllegalStateException("Converter required");
+			}
 			JockeyImpl jockey = new DefaultJockeyImpl();
 			jockey.setConverter(_converter);
 			return jockey;
