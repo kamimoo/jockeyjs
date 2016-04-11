@@ -1,6 +1,21 @@
 JockeyJS
 ========
 
+This is forked from [tcoulter/jockeyjs](https://github.com/tcoulter/jockeyjs).
+
+Differences from the original
+-----
+
+This library differs from the original in Android implementation.
+
+* Project structure is based on Gradle
+* Published and available on JCenter
+* Create Jockey object using builder
+* Jackson support
+
+Introduction
+-----
+
 JockeyJS is a dual-iOS and Android library that facilitates two-way communication between native applications and JavaScript apps running inside them.
 
 <img src="example.png" height="521px" width="277px" />
@@ -27,10 +42,22 @@ Setup - Android
 
 JockeyJS will help your Android app communicate with a JavaScript application running inside a WebView.
 
-1. Download the latest JockeyJS.Android project.
-1. Add a library reference to JockeyJS.Android in your Android application (in Eclipse this is done through [Right-click Project]->Properties->Android->Add..)
+1. Integrate the latest JockeyJS in your project via Maven.
 1. In your web app make sure to include `JockeyJS/js/jockey.js` as a script tag.
 1. Add Jockey into your app.
+
+Gradle:
+
+```groovy
+repositories {
+  jcenter()
+}
+dependencies {
+  compile "com.github.kamimoo.jockeyjs:jockeyjs:${version}" // core SDK
+  compile "com.github.kamimoo.jockeyjs:converter-gson:${version}" // for using Gson as JSON converter
+  compile "com.github.kamimoo.jockeyjs:converter-jackson:${version}" // for using Jackson as JSON converter
+}
+```
 
 There are two ways you can use Jockey in your Android app.
 
@@ -49,20 +76,22 @@ WebViewClient myWebViewClient;
 @Override
 protected void onStart() {
 	super.onStart();
-	
-	//Get the default JockeyImpl
-	jockey = JockeyImpl.getDefault();
+
+	//Build a Jockey instance
+	jockey = Jockey.Builder()
+	         .converter(new GsonConverter()) // You can use other converter
+	         .build();
 
 	//Configure your webView to be used with Jockey
 	jockey.configure(webView);
-	
+
 	//Pass Jockey your custom WebViewClient
 	//Notice we can do this even after our webView has been configured.
 	jockey.setWebViewClient(myWebViewClient)
 
 	//Set some event handlers
 	setJockeyEvents();
-	
+
 	//Load your webPage
 	webView.loadUrl("file:///your.url.com");
 }
@@ -97,22 +126,22 @@ private ServiceConnection _connection = new ServiceConnection() {
 	public void onServiceDisconnected(ComponentName name) {
 		_bound = false;
 	}
-	
+
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		JockeyBinder binder = (JockeyBinder) service;
-		
+
 		//Retrieves the instance of the JockeyService from the binder
 		jockey = binder.getService();
-		
+
 		//This will setup the WebView to enable JavaScript execution and provide a custom JockeyWebViewClient
 		jockey.configure(webView);
-		
+
 		//Make Jockey start listening for events
 		setJockeyEvents();
-		
+
 		_bound = true;
-		
+
 		//Redirect the WebView to your webpage.
 		webView.loadUrl("file:///android_assets/index.html");
 	}
@@ -291,7 +320,7 @@ jockey.on("event-name", nativeOS(this)
 			.vibrate(100), //Don't forget to grant permission
 			new JockeyHandler() {
 				@Override
-				protected void doPerform(Map<Object, Object> payload) {	
+				protected void doPerform(Map<Object, Object> payload) {
 				}
 			}
 );
@@ -350,5 +379,4 @@ Contributors
 
 * @tcoulter - original author (iOS only)
 * @paulpdaniels - Android support
-
-
+* @kamimoo
