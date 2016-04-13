@@ -1,5 +1,9 @@
 apply plugin: 'com.android.library'
 
+group = GROUP
+version = VERSION_NAME
+archivesBaseName = POM_ARTIFACT_ID
+
 ext.gsonVersion = '2.6.2'
 
 android {
@@ -24,3 +28,4 @@ dependencies {
   compile project(':jockeyjs')
 }
 
+apply from: "${rootProject.projectDir}/publish.gradle"

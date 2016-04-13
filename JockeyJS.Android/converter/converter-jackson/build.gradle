@@ -1,5 +1,9 @@
 apply plugin: 'com.android.library'
 
+group = GROUP
+version = VERSION_NAME
+archivesBaseName = POM_ARTIFACT_ID
+
 ext.jacksonVersion = '2.6.6'
 
 android {
@@ -25,3 +29,5 @@ dependencies {
   compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
   compile project(':jockeyjs')
 }
+
+apply from: "${rootProject.projectDir}/publish.gradle"

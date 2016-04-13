@@ -1,0 +1,41 @@
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+install {
+  repositories.mavenInstaller {
+    pom.project {
+      name POM_NAME
+      description POM_DESCRIPTION
+      url WEBSITE_URL
+      packaging POM_PACKAGING
+      groupId project.group
+      artifactId POM_ARTIFACT_ID
+      version project.version
+    }
+  }
+}
+
+bintray {
+  user = project.hasProperty('bintrayUser') ? bintrayUser : ''
+  key = project.hasProperty('bintrayApiKey') ? bintrayApiKey : ''
+
+  pkg {
+    repo = 'maven'
+    name = "${GROUP}:${POM_ARTIFACT_ID}"
+    licenses = ['MIT']
+    websiteUrl = WEBSITE_URL
+    vcsUrl = VCS_URL
+    version {
+      name = project.version
+      released = new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+      gpg {
+        sign = true
+        passphrase = project.hasProperty('bintrayGpgPassword') ? bintrayGpgPassword : ''
+      }
+    }
+  }
+  publications = ['mavenPublication']
+  configurations = ['archives']
+}
+
