@@ -1,15 +1,14 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
+
+ext.jacksonVersion = '2.6.4'
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   buildToolsVersion rootProject.ext.buildToolsVersion
 
   defaultConfig {
-    applicationId "com.example.jockeytestapp"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 1
-    versionName '1.0'
   }
 
   buildTypes {
@@ -18,16 +17,10 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
     }
   }
-
-  packagingOptions {
-    exclude 'META-INF/NOTICE'
-    exclude 'META-INF/LICENSE'
-  }
 }
 
 dependencies {
+  compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+  compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
   compile project(':jockeyjs')
-  compile project(':converter:converter-gson')
-  compile project(':converter:converter-jackson')
-  compile 'com.android.support:support-v4:23.1.1'
 }

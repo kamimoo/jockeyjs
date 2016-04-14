@@ -22,6 +22,7 @@
  ******************************************************************************/
 package com.jockeyjs;
 
+import com.jockeyjs.converter.JsonConverter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -30,7 +31,6 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.google.gson.Gson;
 import com.jockeyjs.util.ForwardingWebViewClient;
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -38,10 +38,9 @@ class JockeyWebViewClient extends ForwardingWebViewClient {
 
 	private JockeyImpl _jockeyImpl;
 	private WebViewClient _delegate;
-	private Gson _gson;
+	private JsonConverter<JockeyWebViewPayload> _converter;
 
 	public JockeyWebViewClient(JockeyImpl jockey) {
-		_gson = new Gson();
 		_jockeyImpl = jockey;
 	}
 
@@ -55,6 +54,10 @@ class JockeyWebViewClient extends ForwardingWebViewClient {
 
 	public WebViewClient delegate() {
 		return _delegate;
+	}
+
+	void setConverter(JsonConverter<JockeyWebViewPayload> converter) {
+		_converter = converter;
 	}
 	
 	@Override
@@ -89,8 +92,7 @@ class JockeyWebViewClient extends ForwardingWebViewClient {
 		String[] parts = uri.getPath().replaceAll("^\\/", "").split("/");
 		String host = uri.getHost();
 
-		JockeyWebViewPayload payload = checkPayload(_gson.fromJson(
-				uri.getQuery(), JockeyWebViewPayload.class));
+		JockeyWebViewPayload payload = checkPayload(_converter.fromJson(uri.getQuery()));
 
 		if (parts.length > 0) {
 			if (host.equals("event")) {

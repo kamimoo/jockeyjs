@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 
+ext.gsonVersion = '2.2.4'
+
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   buildToolsVersion rootProject.ext.buildToolsVersion
@@ -8,7 +10,17 @@ android {
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
   }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+    }
+  }
 }
 
 dependencies {
+  compile "com.google.code.gson:gson:$gsonVersion"
+  compile project(':jockeyjs')
 }
+

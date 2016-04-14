@@ -1,2 +1,4 @@
 include ':jockeyjs'
+include ':converter:converter-gson'
+include ':converter:converter-jackson'
 include ':sample'
