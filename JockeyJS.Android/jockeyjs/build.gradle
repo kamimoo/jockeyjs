@@ -1,5 +1,9 @@
 apply plugin: 'com.android.library'
 
+group = GROUP
+version = VERSION_NAME
+archivesBaseName = POM_ARTIFACT_ID
+
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   buildToolsVersion rootProject.ext.buildToolsVersion
@@ -8,7 +12,13 @@ android {
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
   }
+
+  lintOptions {
+    disable 'WrongConstant'
+  }
 }
 
 dependencies {
 }
+
+apply from: "${rootProject.projectDir}/publish.gradle"

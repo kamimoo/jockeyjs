@@ -1,6 +1,10 @@
 apply plugin: 'com.android.library'
 
-ext.jacksonVersion = '2.6.4'
+group = GROUP
+version = VERSION_NAME
+archivesBaseName = POM_ARTIFACT_ID
+
+ext.jacksonVersion = '2.6.6'
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
@@ -9,6 +13,7 @@ android {
   defaultConfig {
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
+    consumerProguardFiles 'proguard-rules.txt'
   }
 
   buildTypes {
@@ -24,3 +29,5 @@ dependencies {
   compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
   compile project(':jockeyjs')
 }
+
+apply from: "${rootProject.projectDir}/publish.gradle"
