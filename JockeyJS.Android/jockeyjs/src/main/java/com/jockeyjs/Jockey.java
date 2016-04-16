@@ -136,8 +136,7 @@ public interface Jockey {
 				throw new IllegalStateException("Converter required");
 			}
 			JockeyImpl jockey = new DefaultJockeyImpl();
-			jockey.setConverter(_converter);
-			jockey.configure(_feature);
+			jockey.configure(_feature, _converter);
 			return jockey;
 		}
 

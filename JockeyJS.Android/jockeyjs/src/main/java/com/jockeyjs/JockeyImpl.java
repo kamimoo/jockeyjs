@@ -141,18 +141,14 @@ public abstract class JockeyImpl implements Jockey {
 		_onValidateListener = listener;
 	}
 
-	@SuppressLint("SetJavaScriptEnabled")
-	void configure(WebViewFeature feature) {
+	void configure(WebViewFeature feature, JsonConverter converter) {
+		_converter = converter;
 		_feature = feature;
 		_feature.bindJockey(this, _converter);
 	}
 
 	public static Jockey getDefault() {
 		return new DefaultJockeyImpl();
-	}
-	
-	void setConverter(JsonConverter<JockeyWebViewPayload> converter) {
-		_converter = converter;
 	}
 
 }
