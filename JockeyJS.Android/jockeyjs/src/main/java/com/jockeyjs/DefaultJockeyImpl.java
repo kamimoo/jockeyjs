@@ -19,7 +19,7 @@ public class DefaultJockeyImpl extends JockeyImpl {
 
 		String url = String.format("javascript:Jockey.trigger(\"%s\", %d, %s)",
 				type, messageId, withPayload);
-		_webView.loadUrl(url);
+		_feature.evaluateJavascript(url);
 
 		++messageCount;
 	}
@@ -28,7 +28,7 @@ public class DefaultJockeyImpl extends JockeyImpl {
 	public void triggerCallbackOnWebView(int messageId) {
 		String url = String.format("javascript:Jockey.triggerCallback(\"%d\")",
 				messageId);
-		_webView.loadUrl(url);
+		_feature.evaluateJavascript(url);
 	}
 
 }

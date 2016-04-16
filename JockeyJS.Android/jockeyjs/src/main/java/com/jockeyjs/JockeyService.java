@@ -29,8 +29,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 
 public class JockeyService extends Service implements Jockey {
@@ -101,17 +99,9 @@ public class JockeyService extends Service implements Jockey {
 		_jockeyImpl.triggerCallbackOnWebView(messageId);
 	}
 
-	public void configure(WebView webView) {
-		_jockeyImpl.configure(webView);
-	}
-
 	@Override
 	public boolean handles(String eventName) {
 		return _jockeyImpl.handles(eventName);
-	}
-
-	public void setWebViewClient(WebViewClient client) {
-		_jockeyImpl.setWebViewClient(client);
 	}
 
 }

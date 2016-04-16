@@ -22,8 +22,8 @@
  ******************************************************************************/
 package com.jockeyjs;
 
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import com.jockeyjs.webview.WebViewFeature;
+
 import com.jockeyjs.converter.JsonConverter;
 
 /**
@@ -110,13 +110,6 @@ public interface Jockey {
 	void triggerCallbackOnWebView(int messageId);
 	
 	/**
-	 * Configures the WebView to be able to receive and send events with Jockey
-	 * 
-	 * @param webView
-	 */
-	void configure(WebView webView);
-
-	/**
 	 * Returns if the Jockey implementation handles the event
 	 * 
 	 * @param string
@@ -133,17 +126,18 @@ public interface Jockey {
 	 */
 	void setOnValidateListener(OnValidateListener listener);
 
-	void setWebViewClient(WebViewClient client);
-	
 	final class Builder {
 
 		private JsonConverter _converter;
+		private WebViewFeature _feature;
+
 		public Jockey build() {
 			if (_converter == null) {
 				throw new IllegalStateException("Converter required");
 			}
 			JockeyImpl jockey = new DefaultJockeyImpl();
 			jockey.setConverter(_converter);
+			jockey.configure(_feature);
 			return jockey;
 		}
 
@@ -152,5 +146,9 @@ public interface Jockey {
 			return this;
 		}
 
+		public Builder webView(WebViewFeature feature) {
+			_feature = feature;
+			return this;
+		}
 	}
 }

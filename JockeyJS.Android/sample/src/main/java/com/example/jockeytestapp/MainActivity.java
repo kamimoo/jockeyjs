@@ -25,6 +25,7 @@ package com.example.jockeytestapp;
 import static com.jockeyjs.NativeOS.nativeOS;
 
 import com.jockeyjs.converter.gson.GsonConverter;
+import com.jockeyjs.webview.SystemWebViewFeature;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -117,18 +118,16 @@ public class MainActivity extends Activity {
 
 		jockey = new Jockey.Builder()
 			.converter(new GsonConverter())
-			.build();
+			.webView(new SystemWebViewFeature(webView,
 
-		jockey.configure(webView);
-		
-		jockey.setWebViewClient(new WebViewClient() {
-			@Override
-			public void onPageFinished(WebView view, String url) {
-				super.onPageFinished(view, url);
-				Log.d("webViewClient", "page finished loading!");
-			}
-		});
-		
+				new WebViewClient() {
+					@Override
+					public void onPageFinished(WebView view, String url) {
+						super.onPageFinished(view, url);
+						Log.d("webViewClient", "page finished loading!");
+					}
+				})).build();
+
 
 		setJockeyEvents();
 

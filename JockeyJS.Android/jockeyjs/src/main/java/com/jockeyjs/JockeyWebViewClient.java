@@ -34,7 +34,7 @@ import android.webkit.WebViewClient;
 import com.jockeyjs.util.ForwardingWebViewClient;
 
 @SuppressLint("SetJavaScriptEnabled")
-class JockeyWebViewClient extends ForwardingWebViewClient {
+public class JockeyWebViewClient extends ForwardingWebViewClient {
 
 	private JockeyImpl _jockeyImpl;
 	private WebViewClient _delegate;
@@ -48,7 +48,7 @@ class JockeyWebViewClient extends ForwardingWebViewClient {
 		return _jockeyImpl;
 	}
 
-	protected void setDelegate(WebViewClient client) {
+	public void setDelegate(WebViewClient client) {
 		_delegate = client;
 	}
 
@@ -56,7 +56,7 @@ class JockeyWebViewClient extends ForwardingWebViewClient {
 		return _delegate;
 	}
 
-	void setConverter(JsonConverter<JockeyWebViewPayload> converter) {
+	public void setConverter(JsonConverter<JockeyWebViewPayload> converter) {
 		_converter = converter;
 	}
 	

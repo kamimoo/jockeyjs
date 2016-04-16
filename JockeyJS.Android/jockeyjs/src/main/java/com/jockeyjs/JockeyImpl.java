@@ -23,17 +23,15 @@
 package com.jockeyjs;
 
 import com.jockeyjs.converter.JsonConverter;
+import com.jockeyjs.webview.WebViewFeature;
 import java.util.HashMap;
 import java.util.Map;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.util.SparseArray;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.jockeyjs.JockeyHandler.OnCompletedListener;
-import com.jockeyjs.util.ForwardingWebViewClient;
 
 public abstract class JockeyImpl implements Jockey {
 
@@ -51,14 +49,11 @@ public abstract class JockeyImpl implements Jockey {
 
 	private Handler _handler = new Handler();
 
-	private JockeyWebViewClient _client;
-
-	protected WebView _webView;
+	protected WebViewFeature _feature;
 
 	protected JsonConverter<JockeyWebViewPayload> _converter;
 
 	public JockeyImpl() {
-		_client = new JockeyWebViewClient(this);
 	}
 
 	@Override
@@ -147,29 +142,17 @@ public abstract class JockeyImpl implements Jockey {
 	}
 
 	@SuppressLint("SetJavaScriptEnabled")
-	@Override
-	public void configure(WebView webView) {
-		_webView = webView;
-		webView.getSettings().setJavaScriptEnabled(true);
-		webView.setWebViewClient(this.getWebViewClient());
-	}
-
-	protected ForwardingWebViewClient getWebViewClient() {
-		return this._client;
+	void configure(WebViewFeature feature) {
+		_feature = feature;
+		_feature.bindJockey(this, _converter);
 	}
 
 	public static Jockey getDefault() {
 		return new DefaultJockeyImpl();
 	}
 	
-	@Override
-	public void setWebViewClient(WebViewClient client) {
-		this._client.setDelegate(client);
-	}
-
 	void setConverter(JsonConverter<JockeyWebViewPayload> converter) {
 		_converter = converter;
-		_client.setConverter(converter);
 	}
 
 }
