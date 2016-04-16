@@ -27,6 +27,6 @@ import java.util.Map;
 public class JockeyWebViewPayload {
 	public int id;
 	public String type;
-	String host;
+	public String host;
 	public Map<Object, Object> payload;
 }

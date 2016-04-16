@@ -27,7 +27,6 @@ import com.jockeyjs.webview.WebViewFeature;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.util.SparseArray;
 
@@ -96,7 +95,7 @@ public abstract class JockeyImpl implements Jockey {
 		_callbacks.put(messageId, callback);
 	}
 
-	protected void triggerEventFromWebView(JockeyWebViewPayload envelope) {
+	public void triggerEventFromWebView(JockeyWebViewPayload envelope) {
 		final int messageId = envelope.id;
 		String type = envelope.type;
 
@@ -120,7 +119,7 @@ public abstract class JockeyImpl implements Jockey {
 		}
 	}
 
-	protected void triggerCallbackForMessage(int messageId) {
+	public void triggerCallbackForMessage(int messageId) {
 		try {
 			JockeyCallback complete = _callbacks.get(messageId, _DEFAULT);
 			complete.call();

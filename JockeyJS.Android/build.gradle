@@ -21,5 +21,6 @@ ext {
   buildToolsVersion = '23.0.2'
 
   minSdkVersion = 8
+  minSdkVersionForXWalk = 14
   targetSdkVersion = 23
 }
