@@ -1,13 +1,11 @@
 package com.jockeyjs;
 
-import android.webkit.WebView;
-
 public class DefaultJockeyImpl extends JockeyImpl {
 	
 	private int messageCount = 0;
 
 	@Override
-	public void send(String type, WebView toWebView, Object withPayload,
+	public void send(String type, Object withPayload,
 			JockeyCallback complete) {
 		int messageId = messageCount;
 
@@ -21,16 +19,16 @@ public class DefaultJockeyImpl extends JockeyImpl {
 
 		String url = String.format("javascript:Jockey.trigger(\"%s\", %d, %s)",
 				type, messageId, withPayload);
-		toWebView.loadUrl(url);
+		_webView.loadUrl(url);
 
 		++messageCount;
 	}
 
 	@Override
-	public void triggerCallbackOnWebView(WebView webView, int messageId) {
+	public void triggerCallbackOnWebView(int messageId) {
 		String url = String.format("javascript:Jockey.triggerCallback(\"%d\")",
 				messageId);
-		webView.loadUrl(url);
+		_webView.loadUrl(url);
 	}
 
 }

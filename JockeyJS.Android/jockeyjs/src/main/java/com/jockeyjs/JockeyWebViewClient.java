@@ -96,7 +96,7 @@ class JockeyWebViewClient extends ForwardingWebViewClient {
 
 		if (parts.length > 0) {
 			if (host.equals("event")) {
-				getImplementation().triggerEventFromWebView(view, payload);
+				getImplementation().triggerEventFromWebView(payload);
 			} else if (host.equals("callback")) {
 				getImplementation().triggerCallbackForMessage(
 						Integer.parseInt(parts[0]));

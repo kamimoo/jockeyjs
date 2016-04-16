@@ -80,25 +80,25 @@ public class JockeyService extends Service implements Jockey {
 		_jockeyImpl.off(type);
 	}
 
-	public void send(String type, WebView toWebView) {
-		send(type, toWebView, null);
+	public void send(String type) {
+		send(type);
 	}
 
-	public void send(String type, WebView toWebView, Object withPayload) {
-		send(type, toWebView, withPayload, null);
+	public void send(String type, Object withPayload) {
+		send(type, withPayload, null);
 	}
 
-	public void send(String type, WebView toWebView, JockeyCallback complete) {
-		send(type, toWebView, null, complete);
+	public void send(String type, JockeyCallback complete) {
+		send(type, null, complete);
 	}
 
-	public void send(String type, WebView toWebView, Object withPayload,
+	public void send(String type, Object withPayload,
 			JockeyCallback complete) {
-		_jockeyImpl.send(type, toWebView, withPayload, complete);
+		_jockeyImpl.send(type,withPayload, complete);
 	}
 
-	public void triggerCallbackOnWebView(WebView webView, int messageId) {
-		_jockeyImpl.triggerCallbackOnWebView(webView, messageId);
+	public void triggerCallbackOnWebView(int messageId) {
+		_jockeyImpl.triggerCallbackOnWebView(messageId);
 	}
 
 	public void configure(WebView webView) {

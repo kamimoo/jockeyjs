@@ -53,6 +53,8 @@ public abstract class JockeyImpl implements Jockey {
 
 	private JockeyWebViewClient _client;
 
+	protected WebView _webView;
+
 	protected JsonConverter<JockeyWebViewPayload> _converter;
 
 	public JockeyImpl() {
@@ -60,18 +62,18 @@ public abstract class JockeyImpl implements Jockey {
 	}
 
 	@Override
-	public void send(String type, WebView toWebView) {
-		send(type, toWebView, null);
+	public void send(String type) {
+		send(type, null);
 	}
 
 	@Override
-	public void send(String type, WebView toWebView, Object withPayload) {
-		send(type, toWebView, withPayload, null);
+	public void send(String type, Object withPayload) {
+		send(type, withPayload, null);
 	}
 
 	@Override
-	public void send(String type, WebView toWebView, JockeyCallback complete) {
-		send(type, toWebView, null, complete);
+	public void send(String type, JockeyCallback complete) {
+		send(type, null, complete);
 
 	}
 
@@ -99,8 +101,7 @@ public abstract class JockeyImpl implements Jockey {
 		_callbacks.put(messageId, callback);
 	}
 
-	protected void triggerEventFromWebView(final WebView webView,
-			JockeyWebViewPayload envelope) {
+	protected void triggerEventFromWebView(JockeyWebViewPayload envelope) {
 		final int messageId = envelope.id;
 		String type = envelope.type;
 
@@ -116,7 +117,7 @@ public abstract class JockeyImpl implements Jockey {
 					_handler.post(new Runnable() {
 						@Override
 						public void run() {
-							triggerCallbackOnWebView(webView, messageId);
+							triggerCallbackOnWebView(messageId);
 						}
 					});
 				}
@@ -148,6 +149,7 @@ public abstract class JockeyImpl implements Jockey {
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	public void configure(WebView webView) {
+		_webView = webView;
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(this.getWebViewClient());
 	}

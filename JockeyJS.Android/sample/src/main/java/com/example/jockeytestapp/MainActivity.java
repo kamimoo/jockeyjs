@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
 	}
 
 	protected void updateColor(Map<String, String> payload) {
-		jockey.send("color-change", webView, payload);
+		jockey.send("color-change", payload);
 	}
 
 	@Override
@@ -165,7 +165,7 @@ public class MainActivity extends Activity {
 			HashMap<String, String> data = new HashMap<String, String>();
 			data.put("feed", "http://www.google.com/doodles/doodles.xml");
 
-			jockey.send("show-image", webView, new JockeyCallback() {
+			jockey.send("show-image", new JockeyCallback() {
 				public void call() {
 					AlertDialog.Builder alert = new AlertDialog.Builder(
 							MainActivity.this);

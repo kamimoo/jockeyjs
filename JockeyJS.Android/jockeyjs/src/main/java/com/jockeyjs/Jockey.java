@@ -64,55 +64,50 @@ public interface Jockey {
 	/**
 	 * Sends a new event to the webview
 	 * 
-	 * Equivalent to calling send(type, toWebView, null, null);
+	 * Equivalent to calling send(type, null, null);
 	 * 
 	 * @param type
-	 * @param toWebView
 	 */
-	void send(String type, WebView toWebView);
+	void send(String type);
 	
 	
 	/**
 	 * Sends a new event to the webview with the included payload
 	 * 
-	 * Equivalent to calling send(type, toWebView, payload, null)
+	 * Equivalent to calling send(type, payload, null)
 	 * 
 	 * @param type
-	 * @param toWebView
 	 * @param withPayload
 	 */
-	void send(String type, WebView toWebView, Object withPayload);
+	void send(String type, Object withPayload);
 	
 	
 	/**
 	 * Sends the new event to the webview and registers a callback to listen for the returned value
 	 * 
-	 * Equivalent to calling send(type, toWebView, null, complete)
+	 * Equivalent to calling send(type, null, complete)
 	 * 
 	 * @param type
-	 * @param toWebView
 	 * @param complete
 	 */
-	void send(String type, WebView toWebView, JockeyCallback complete);
+	void send(String type, JockeyCallback complete);
 	
 	
 	/**
 	 * Sends the new event to the webview with a payload and a callback to listen for the webpage response.
 	 * 
 	 * @param type
-	 * @param toWebView
 	 * @param withPayload
 	 * @param complete
 	 */
-	void send(String type, WebView toWebView, Object withPayload, JockeyCallback complete);
+	void send(String type, Object withPayload, JockeyCallback complete);
 	
 	/**
 	 * Triggers the callback on the webview with the appropriate messageId
 	 * 
-	 * @param webView
 	 * @param messageId
 	 */
-	void triggerCallbackOnWebView(WebView webView, int messageId);
+	void triggerCallbackOnWebView(int messageId);
 	
 	/**
 	 * Configures the WebView to be able to receive and send events with Jockey
