@@ -135,6 +135,10 @@ public interface Jockey {
 			if (_converter == null) {
 				throw new IllegalStateException("Converter required");
 			}
+			if (_feature == null) {
+				throw  new IllegalStateException("WebView required");
+			}
+
 			JockeyImpl jockey = new DefaultJockeyImpl();
 			jockey.configure(_feature, _converter);
 			return jockey;
