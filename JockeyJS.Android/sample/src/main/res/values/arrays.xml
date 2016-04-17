@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="converters">
+    <item>Gson</item>
+    <item>Jackson</item>
+  </string-array>
+
+  <string-array name="webviews">
+    <item>System</item>
+    <item>Crosswalk</item>
+  </string-array>
+</resources>

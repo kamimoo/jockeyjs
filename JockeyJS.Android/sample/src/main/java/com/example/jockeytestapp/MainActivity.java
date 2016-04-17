@@ -22,16 +22,16 @@
  ******************************************************************************/
 package com.example.jockeytestapp;
 
-import static com.jockeyjs.NativeOS.nativeOS;
-
-import com.jockeyjs.converter.gson.GsonConverter;
-import com.jockeyjs.webview.SystemWebViewFeature;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -47,7 +47,6 @@ import android.view.WindowManager;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -56,15 +55,39 @@ import com.jockeyjs.Jockey;
 import com.jockeyjs.JockeyAsyncHandler;
 import com.jockeyjs.JockeyCallback;
 import com.jockeyjs.JockeyHandler;
+import com.jockeyjs.JockeyWebViewPayload;
+import com.jockeyjs.converter.JsonConverter;
+import com.jockeyjs.converter.gson.GsonConverter;
+import com.jockeyjs.converter.jackson.JacksonConverter;
+import com.jockeyjs.webview.SystemWebViewFeature;
+import com.jockeyjs.webview.WebViewFeature;
+import com.jockeyjs.webview.xwalk.XWalkWebViewFeature;
+import org.xwalk.core.XWalkJavascriptResult;
+import org.xwalk.core.XWalkPreferences;
+import org.xwalk.core.XWalkUIClient;
+import org.xwalk.core.XWalkView;
 
-public class MainActivity extends Activity {
+import static com.jockeyjs.NativeOS.nativeOS;
+
+public class MainActivity extends Activity implements SettingsDialogFragment.Callback {
 
 	public WebView webView;
+	public XWalkView xWalkView;
 
 	public LinearLayout toolbar;
 	public boolean isFullscreen = false;
 
 	private Jockey jockey;
+	private int activeConverterType;
+	private int activeWebViewFeatureType;
+	private List<JsonConverter<JockeyWebViewPayload>> converters;
+	private List<WebViewFeature> webViewFeatures;
+
+	public static final int CONVERTER_GSON = 0;
+	public static final int CONVERTER_JACKSON = 1;
+
+	public static final int WEBVIEW_FEATURE_SYSTEM = 0;
+	public static final int WEBVIEW_FEATURE_XWALK = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +95,16 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		toolbar = (LinearLayout) findViewById(R.id.colorsView);
 
-		webView = (WebView) findViewById(R.id.webView);
+		webView = (WebView) findViewById(R.id.systemWebView);
+		xWalkView = (XWalkView) findViewById(R.id.webView);
+		converters =
+			Collections.unmodifiableList(Arrays.asList(new GsonConverter(), new JacksonConverter()));
+		webViewFeatures = Collections.unmodifiableList(
+			Arrays.asList(new SystemWebViewFeature(webView), new XWalkWebViewFeature(xWalkView)));
+		activeConverterType = CONVERTER_GSON;
+		// Until Crosswalk 18, XWalkView should be visible at first
+		// https://crosswalk-project.org/jira/browse/XWALK-5753
+		activeWebViewFeatureType = WEBVIEW_FEATURE_XWALK;
 
 		OnClickListener toolbarListener = new OnClickListener() {
 
@@ -116,33 +148,35 @@ public class MainActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 
-		jockey = new Jockey.Builder()
-			.converter(new GsonConverter())
-			.webView(new SystemWebViewFeature(webView,
-
-				new WebViewClient() {
-					@Override
-					public void onPageFinished(WebView view, String url) {
-						super.onPageFinished(view, url);
-						Log.d("webViewClient", "page finished loading!");
-					}
-				})).build();
-
+		setupJockey();
 
 		setJockeyEvents();
 
+		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebChromeClient(new WebChromeClient() {
 			@Override
-			public boolean onJsAlert(WebView view, String url, String message,
-					JsResult result) {
-				Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT)
-						.show();
+			public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+				Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
 				result.confirm();
-				return true;
+				return super.onJsAlert(view, url, message, result);
 			}
 		});
+		xWalkView.setUIClient(new XWalkUIClient(xWalkView) {
+			@Override
+			public boolean onJavascriptModalDialog(XWalkView view, JavascriptMessageType type, String url,
+				String message, String defaultValue, XWalkJavascriptResult result) {
+				Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+				result.confirm();
+				return super.onJavascriptModalDialog(view, type, url, message, defaultValue, result);
+			}
+		});
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			webView.setWebContentsDebuggingEnabled(true);
+		}
+		XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, true);
 
 		webView.loadUrl("file:///android_asset/index.html");
+		xWalkView.load("file:///android_asset/index.html", null);
 	}
 
 	@Override
@@ -166,20 +200,23 @@ public class MainActivity extends Activity {
 
 			jockey.send("show-image", new JockeyCallback() {
 				public void call() {
-					AlertDialog.Builder alert = new AlertDialog.Builder(
-							MainActivity.this);
+					AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
 					alert.setTitle("Image loaded");
 					alert.setMessage("callback in Android from JS event");
-					alert.setNegativeButton("Score!",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-								}
-							});
+					alert.setNegativeButton("Score!", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						});
 					alert.show();
 				}
 			});
+			break;
+			case R.id.action_settings:
+				DialogFragment dialog = SettingsDialogFragment.newInstance(activeConverterType,
+					activeWebViewFeatureType);
+				dialog.show(getFragmentManager(), "SettingsDialogFragment");
+
 			break;
 		}
 
@@ -239,5 +276,29 @@ public class MainActivity extends Activity {
 			toolbar.setVisibility(LinearLayout.GONE);
 			isFullscreen = true;
 		}
+	}
+
+	private void setupJockey() {
+		jockey = new Jockey.Builder()
+			.converter(converters.get(activeConverterType))
+			.webView(webViewFeatures.get(activeWebViewFeatureType))
+			.build();
+	}
+
+	@Override
+	public void onChangeSettings(int converterIndex, int webViewFeatureIndex) {
+		activeConverterType = converterIndex;
+		activeWebViewFeatureType = webViewFeatureIndex;
+
+		if (activeWebViewFeatureType == WEBVIEW_FEATURE_SYSTEM) {
+			webView.setVisibility(View.VISIBLE);
+			xWalkView.setVisibility(View.GONE);
+		} else {
+			webView.setVisibility(View.GONE);
+			xWalkView.setVisibility(View.VISIBLE);
+		}
+
+		setupJockey();
+		setJockeyEvents();
 	}
 }
