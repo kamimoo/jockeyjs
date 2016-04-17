@@ -22,9 +22,7 @@
  ******************************************************************************/
 package com.jockeyjs;
 
-import com.jockeyjs.converter.JsonConverter;
-import java.net.URI;
-import java.net.URISyntaxException;
+import android.net.Uri;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -38,7 +36,6 @@ public class JockeyWebViewClient extends ForwardingWebViewClient {
 
 	private JockeyImpl _jockeyImpl;
 	private WebViewClient _delegate;
-	private JsonConverter<JockeyWebViewPayload> _converter;
 
 	public JockeyWebViewClient(JockeyImpl jockey) {
 		_jockeyImpl = jockey;
@@ -56,10 +53,6 @@ public class JockeyWebViewClient extends ForwardingWebViewClient {
 		return _delegate;
 	}
 
-	public void setConverter(JsonConverter<JockeyWebViewPayload> converter) {
-		_converter = converter;
-	}
-	
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
 	
@@ -68,14 +61,12 @@ public class JockeyWebViewClient extends ForwardingWebViewClient {
 			return true;
 	
 		try {
-			URI uri = new URI(url);
+			Uri uri = Uri.parse(url);
 	
 			if (isJockeyScheme(uri)) {
-				processUri(view, uri);
+				_jockeyImpl.processUri(uri);
 				return true;
 			}
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
 		} catch (HostValidationException e) {
 			e.printStackTrace();
 			Log.e("Jockey", "The source of the event could not be validated!");
@@ -83,35 +74,8 @@ public class JockeyWebViewClient extends ForwardingWebViewClient {
 		return false;
 	}
 
-	public boolean isJockeyScheme(URI uri) {
+	public boolean isJockeyScheme(Uri uri) {
 		return uri.getScheme().equals("jockey") && !uri.getQuery().equals("");
-	}
-
-	public void processUri(WebView view, URI uri)
-			throws HostValidationException {
-		String[] parts = uri.getPath().replaceAll("^\\/", "").split("/");
-		String host = uri.getHost();
-
-		JockeyWebViewPayload payload = checkPayload(_converter.fromJson(uri.getQuery()));
-
-		if (parts.length > 0) {
-			if (host.equals("event")) {
-				getImplementation().triggerEventFromWebView(payload);
-			} else if (host.equals("callback")) {
-				getImplementation().triggerCallbackForMessage(
-						Integer.parseInt(parts[0]));
-			}
-		}
-	}
-
-	public JockeyWebViewPayload checkPayload(JockeyWebViewPayload fromJson)
-			throws HostValidationException {
-		validateHost(fromJson.host);
-		return fromJson;
-	}
-
-	private void validateHost(String host) throws HostValidationException {
-		getImplementation().validate(host);
 	}
 
 }

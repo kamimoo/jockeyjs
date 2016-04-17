@@ -5,7 +5,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.jockeyjs.JockeyImpl;
 import com.jockeyjs.JockeyWebViewClient;
-import com.jockeyjs.converter.JsonConverter;
 
 public class SystemWebViewFeature implements WebViewFeature {
 	private final WebView webView;
@@ -22,11 +21,10 @@ public class SystemWebViewFeature implements WebViewFeature {
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
-	public void bindJockey(JockeyImpl jockey, JsonConverter converter) {
+	public void bindJockey(JockeyImpl jockey) {
 		webView.getSettings().setJavaScriptEnabled(true);
 		JockeyWebViewClient jockeyWebViewClient = new JockeyWebViewClient(jockey);
 		jockeyWebViewClient.setDelegate(webViewClient);
-		jockeyWebViewClient.setConverter(converter);
 		webView.setWebViewClient(jockeyWebViewClient);
 	}
 

@@ -22,6 +22,7 @@
  ******************************************************************************/
 package com.jockeyjs;
 
+import android.net.Uri;
 import com.jockeyjs.converter.JsonConverter;
 import com.jockeyjs.webview.WebViewFeature;
 import java.util.HashMap;
@@ -143,11 +144,35 @@ public abstract class JockeyImpl implements Jockey {
 	void configure(WebViewFeature feature, JsonConverter converter) {
 		_converter = converter;
 		_feature = feature;
-		_feature.bindJockey(this, _converter);
+		_feature.bindJockey(this);
 	}
 
 	public static Jockey getDefault() {
 		return new DefaultJockeyImpl();
 	}
 
+	public void processUri(Uri uri)
+		throws HostValidationException {
+		String[] parts = uri.getPath().replaceAll("^\\/", "").split("/");
+		String host = uri.getHost();
+
+		JockeyWebViewPayload payload = checkPayload(_converter.fromJson(uri.getQuery()));
+
+		if (parts.length > 0) {
+			if (host.equals("event")) {
+				triggerEventFromWebView(payload);
+			} else if (host.equals("callback")) {
+				triggerCallbackForMessage(Integer.parseInt(parts[0]));
+			}
+		}
+	}
+
+	private JockeyWebViewPayload checkPayload(JockeyWebViewPayload fromJson)
+		throws HostValidationException {
+		validateHost(fromJson.host);
+		return fromJson;
+	}
+	private void validateHost(String host) throws HostValidationException {
+		validate(host);
+	}
 }

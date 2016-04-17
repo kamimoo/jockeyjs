@@ -1,7 +1,6 @@
 package com.jockeyjs.webview.xwalk;
 
 import com.jockeyjs.JockeyImpl;
-import com.jockeyjs.converter.JsonConverter;
 import com.jockeyjs.webview.WebViewFeature;
 import org.xwalk.core.XWalkResourceClient;
 import org.xwalk.core.XWalkView;
@@ -20,9 +19,8 @@ public class XWalkWebViewFeature implements WebViewFeature {
 	}
 
 	@Override
-	public void bindJockey(JockeyImpl jockey, JsonConverter converter) {
+	public void bindJockey(JockeyImpl jockey) {
 		JockeyXWalkResourceClient client = new JockeyXWalkResourceClient(xWalkView, jockey);
-		client.setConverter(converter);
 		xWalkView.setResourceClient(client);
 	}
 
