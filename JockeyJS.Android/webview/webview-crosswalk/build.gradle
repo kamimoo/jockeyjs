@@ -4,6 +4,8 @@ group = GROUP
 version = VERSION_NAME
 archivesBaseName = POM_ARTIFACT_ID
 
+ext.xwalkVersion = '17.46.448.10'
+
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   buildToolsVersion rootProject.ext.buildToolsVersion
@@ -26,7 +28,7 @@ repositories {
 }
 
 dependencies {
-  compile 'org.xwalk:xwalk_core_library:16.45.421.19'
+  compile "org.xwalk:xwalk_core_library:$xwalkVersion"
   compile project(':jockeyjs')
 }
 
