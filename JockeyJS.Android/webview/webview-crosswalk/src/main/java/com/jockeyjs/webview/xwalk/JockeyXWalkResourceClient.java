@@ -7,12 +7,22 @@ import com.jockeyjs.JockeyImpl;
 import org.xwalk.core.XWalkResourceClient;
 import org.xwalk.core.XWalkView;
 
-public class JockeyXWalkResourceClient extends XWalkResourceClient {
+public class JockeyXWalkResourceClient extends ForwardingXWalkResourceClient {
 	private JockeyImpl jockeyImpl;
+	private XWalkResourceClient delegate;
 
 	public JockeyXWalkResourceClient(XWalkView view, JockeyImpl jockey) {
 		super(view);
 		jockeyImpl = jockey;
+	}
+
+	public void setDelegate(XWalkResourceClient client) {
+		delegate = client;
+	}
+
+	@Override
+	protected XWalkResourceClient delegate() {
+		return delegate;
 	}
 
 	@Override

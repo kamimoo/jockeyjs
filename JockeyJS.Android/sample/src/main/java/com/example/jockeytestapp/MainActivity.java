@@ -47,6 +47,7 @@ import android.view.WindowManager;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -64,6 +65,7 @@ import com.jockeyjs.webview.WebViewFeature;
 import com.jockeyjs.webview.xwalk.XWalkWebViewFeature;
 import org.xwalk.core.XWalkJavascriptResult;
 import org.xwalk.core.XWalkPreferences;
+import org.xwalk.core.XWalkResourceClient;
 import org.xwalk.core.XWalkUIClient;
 import org.xwalk.core.XWalkView;
 
@@ -99,8 +101,23 @@ public class MainActivity extends Activity implements SettingsDialogFragment.Cal
 		xWalkView = (XWalkView) findViewById(R.id.webView);
 		converters =
 			Collections.unmodifiableList(Arrays.asList(new GsonConverter(), new JacksonConverter()));
+		WebViewFeature systemWebViewFeature = new SystemWebViewFeature(webView, new WebViewClient() {
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
+				Log.d("webViewClient", "page finished loading!");
+			}
+		});
+		WebViewFeature xwalkWebViewFeature = new XWalkWebViewFeature(xWalkView,
+			new XWalkResourceClient(xWalkView) {
+				@Override
+				public void onLoadFinished(XWalkView view, String url) {
+					super.onLoadFinished(view, url);
+					Log.d("xWalkResourceClient", "page finished loading!");
+				}
+			});
 		webViewFeatures = Collections.unmodifiableList(
-			Arrays.asList(new SystemWebViewFeature(webView), new XWalkWebViewFeature(xWalkView)));
+			Arrays.asList(systemWebViewFeature, xwalkWebViewFeature));
 		activeConverterType = CONVERTER_GSON;
 		// Until Crosswalk 18, XWalkView should be visible at first
 		// https://crosswalk-project.org/jira/browse/XWALK-5753

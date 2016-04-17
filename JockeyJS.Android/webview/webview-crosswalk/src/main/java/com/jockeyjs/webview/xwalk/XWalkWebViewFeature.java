@@ -21,6 +21,7 @@ public class XWalkWebViewFeature implements WebViewFeature {
 	@Override
 	public void bindJockey(JockeyImpl jockey) {
 		JockeyXWalkResourceClient client = new JockeyXWalkResourceClient(xWalkView, jockey);
+		client.setDelegate(resourceClient);
 		xWalkView.setResourceClient(client);
 	}
 
