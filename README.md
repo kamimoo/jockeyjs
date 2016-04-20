@@ -12,6 +12,7 @@ This library differs from the original in Android implementation.
 * Published and available on JCenter
 * Create Jockey object using builder
 * Jackson support
+* Crosswalk support
 
 Introduction
 -----
@@ -51,13 +52,17 @@ Gradle:
 ```groovy
 repositories {
   jcenter()
+	maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' } // for using Crosswalk as WebView
 }
 dependencies {
   compile "com.github.kamimoo.jockeyjs:jockeyjs:${version}" // core SDK
   compile "com.github.kamimoo.jockeyjs:converter-gson:${version}" // for using Gson as JSON converter
   compile "com.github.kamimoo.jockeyjs:converter-jackson:${version}" // for using Jackson as JSON converter
+  compile "com.github.kamimoo.jockeyjs:webview-crosswalk:${version}" // for using Crosswalk as WebView
 }
 ```
+
+ The latest version is [![Download](https://api.bintray.com/packages/kamimoo/maven/com.github.kamimoo.jockeyjs%3Ajockeyjs/images/download.svg) ](https://bintray.com/kamimoo/maven/com.github.kamimoo.jockeyjs%3Ajockeyjs/_latestVersion)
 
 There are two ways you can use Jockey in your Android app.
 
@@ -80,10 +85,8 @@ protected void onStart() {
 	//Build a Jockey instance
 	jockey = Jockey.Builder()
 	         .converter(new GsonConverter()) // You can use other converter
+	         .webView(new SystemWebViewFeature(webView));
 	         .build();
-
-	//Configure your webView to be used with Jockey
-	jockey.configure(webView);
 
 	//Pass Jockey your custom WebViewClient
 	//Notice we can do this even after our webView has been configured.
@@ -133,9 +136,6 @@ private ServiceConnection _connection = new ServiceConnection() {
 
 		//Retrieves the instance of the JockeyService from the binder
 		jockey = binder.getService();
-
-		//This will setup the WebView to enable JavaScript execution and provide a custom JockeyWebViewClient
-		jockey.configure(webView);
 
 		//Make Jockey start listening for events
 		setJockeyEvents();
